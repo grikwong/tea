@@ -5,12 +5,11 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-
 	"code.gitea.io/sdk/gitea"
-
+	"fmt"
 	"github.com/urfave/cli"
+	"log"
+	"strings"
 )
 
 // CmdPulls represents to login a gitea server.
@@ -27,6 +26,10 @@ var CmdPulls = cli.Command{
 		cli.StringFlag{
 			Name:  "repo, r",
 			Usage: "Indicate one repository, optional when inside a gitea repository",
+		},
+		cli.BoolFlag{
+			Name:  "matchLogin, ml",
+			Usage: "Results will be filtered to match the current login value",
 		},
 	},
 }
@@ -48,15 +51,24 @@ func runPulls(ctx *cli.Context) error {
 		return nil
 	}
 
+	matchLogin := ctx.Bool("matchLogin")
 	for _, pr := range prs {
-		if pr == nil {
+		if pr == nil || (matchLogin && login.Name != pr.Poster.Email) {
 			continue
 		}
 		name := pr.Poster.FullName
 		if len(name) == 0 {
 			name = pr.Poster.UserName
 		}
-		fmt.Printf("#%d\t%s\t%s\t%s\n", pr.Index, name, pr.Updated.Format("2006-01-02 15:04:05"), pr.Title)
+
+		var jiraTicket string
+		idx := strings.Index(pr.Body, "[PRD-")
+		if idx > 0 {
+			partial := pr.Body[idx+1:]
+			toIdx := strings.Index(partial, "]")
+			jiraTicket = partial[:toIdx]
+		}
+		fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, name, pr.Updated.Format("2006-01-02 15:04:05"), pr.Title, jiraTicket)
 	}
 
 	return nil
