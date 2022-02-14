@@ -38,6 +38,7 @@ func main() {
 		cmd.CmdLogout,
 		cmd.CmdIssues,
 		cmd.CmdPulls,
+		cmd.CmdPull,
 		cmd.CmdReleases,
 	}
 	err := app.Run(os.Args)
