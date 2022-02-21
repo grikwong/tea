@@ -17,7 +17,7 @@ import (
 )
 
 // Version holds the current Gitea version
-var Version = "0.1.0-dev"
+var Version = "0.1.1-dev-wayne"
 
 // Tags holds the build tags used
 var Tags = ""

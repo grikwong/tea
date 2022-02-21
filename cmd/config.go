@@ -5,13 +5,10 @@
 package cmd
 
 import (
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"net/http/cookiejar"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -37,16 +34,9 @@ type Login struct {
 
 // Client returns a client to operate Gitea API
 func (l *Login) Client() *gitea.Client {
-	client := gitea.NewClient(l.URL, l.Token)
-	if l.Insecure {
-		cookieJar, _ := cookiejar.New(nil)
-
-		client.SetHTTPClient(&http.Client{
-			Jar: cookieJar,
-			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-			},
-		})
+	client, err := gitea.NewClient(l.URL, gitea.SetToken(l.Token))
+	if err != nil {
+		log.Fatalf("unable to create gitea client: %v", err)
 	}
 	return client
 }

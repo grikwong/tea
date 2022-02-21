@@ -47,7 +47,7 @@ func runPullDetail(ctx *cli.Context, index string) error {
 		return err
 	}
 
-	pr, err := login.Client().GetPullRequest(owner, repo, idx)
+	pr, _, err := login.Client().GetPullRequest(owner, repo, idx)
 	if err != nil {
 		log.Fatal(err)
 	}

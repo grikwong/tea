@@ -65,7 +65,7 @@ func runIssueDetail(ctx *cli.Context, index string) error {
 		return err
 	}
 
-	issue, err := login.Client().GetIssue(owner, repo, idx)
+	issue, _, err := login.Client().GetIssue(owner, repo, idx)
 	if err != nil {
 		return err
 	}
@@ -82,9 +82,8 @@ func runIssueDetail(ctx *cli.Context, index string) error {
 func runIssuesList(ctx *cli.Context) error {
 	login, owner, repo := initCommand(ctx)
 
-	issues, err := login.Client().ListRepoIssues(owner, repo, gitea.ListIssueOption{
-		Page:  0,
-		State: string(gitea.StateOpen),
+	issues, _, err := login.Client().ListRepoIssues(owner, repo, gitea.ListIssueOption{
+		State: gitea.StateOpen,
 	})
 
 	if err != nil {
@@ -167,7 +166,7 @@ func getGlobalFlag(ctx *cli.Context, flag string) string {
 func runIssuesCreate(ctx *cli.Context) error {
 	login, owner, repo := initCommand(ctx)
 
-	_, err := login.Client().CreateIssue(owner, repo, gitea.CreateIssueOption{
+	_, _, err := login.Client().CreateIssue(owner, repo, gitea.CreateIssueOption{
 		Title: ctx.String("title"),
 		Body:  ctx.String("body"),
 		// TODO:

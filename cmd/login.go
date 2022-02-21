@@ -76,7 +76,11 @@ func runLoginAdd(ctx *cli.Context) error {
 		log.Fatal("load config file failed", yamlConfigPath)
 	}
 
-	client := gitea.NewClient(ctx.String("url"), ctx.String("token"))
+	client, err := gitea.NewClient(ctx.String("url"), gitea.SetToken(ctx.String("token")))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	if ctx.Bool("insecure") {
 		cookieJar, _ := cookiejar.New(nil)
 
@@ -87,7 +91,7 @@ func runLoginAdd(ctx *cli.Context) error {
 			},
 		})
 	}
-	u, err := client.GetMyUserInfo()
+	u, _, err := client.GetMyUserInfo()
 	if err != nil {
 		log.Fatal(err)
 	}
