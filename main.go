@@ -10,8 +10,8 @@ import (
 	"os"
 	"strings"
 
-	"code.gitea.io/tea/cmd"
-	"code.gitea.io/tea/modules/setting"
+	"github.com/grikwong/tea/cmd"
+	"github.com/grikwong/tea/modules/setting"
 
 	"github.com/urfave/cli"
 )

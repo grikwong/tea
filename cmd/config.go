@@ -18,8 +18,8 @@ import (
 	"strings"
 
 	"code.gitea.io/sdk/gitea"
-	local_git "code.gitea.io/tea/modules/git"
-	"code.gitea.io/tea/modules/utils"
+	local_git "github.com/grikwong/tea/modules/git"
+	"github.com/grikwong/tea/modules/utils"
 	git_config "gopkg.in/src-d/go-git.v4/config"
 
 	"github.com/go-gitea/yaml"

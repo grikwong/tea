@@ -1,4 +1,4 @@
-module code.gitea.io/tea
+module github.com/grikwong/tea
 
 go 1.12
 

@@ -9,8 +9,8 @@ Currently no prebuilt binaries are provided.
 To install, a Go installation is needed.
 
 ```sh
-go get code.gitea.io/tea
-go install code.gitea.io/tea
+go get github.com/grikwong/tea
+go install github.com/grikwong/tea
 ```
 
 If the `tea` executable is not found, you might need to set up your `$GOPATH` and `$PATH` variables first:
@@ -42,8 +42,8 @@ tea releases
 To compile the sources yourself run the following:
 
 ```sh
-go get code.gitea.io/tea
-cd "${GOPATH}/src/code.gitea.io/tea"
+go get github.com/grikwong/tea
+cd "${GOPATH}/src/github.com/grikwong/tea"
 go build
 ```
 

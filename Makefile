@@ -1,5 +1,5 @@
 DIST := dist
-IMPORT := code.gitea.io/tea
+IMPORT := github.com/grikwong/tea
 export GO111MODULE=off
 
 GO ?= go
