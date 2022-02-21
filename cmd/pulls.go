@@ -70,7 +70,9 @@ func runPulls(ctx *cli.Context) error {
 			if idx > 0 {
 				partial := pr.Body[idx+1:]
 				toIdx := strings.Index(partial, "]")
-				jiraTicket = partial[:toIdx]
+				if toIdx > 0 {
+					jiraTicket = partial[:toIdx]
+				}
 			}
 			fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, name, pr.Updated.Format("2006-01-02 15:04:05"), pr.Title, jiraTicket)
 		}
