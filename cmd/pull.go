@@ -5,6 +5,7 @@
 package cmd
 
 import (
+	"code.gitea.io/sdk/gitea"
 	"fmt"
 	"log"
 	"strconv"
@@ -27,6 +28,10 @@ var CmdPull = cli.Command{
 		cli.StringFlag{
 			Name:  "repo, r",
 			Usage: "Indicate one repository, optional when inside a gitea repository",
+		},
+		cli.BoolFlag{
+			Name:  "merge, mg",
+			Usage: "Merge a certain pull request",
 		},
 	},
 }
@@ -57,10 +62,18 @@ func runPullDetail(ctx *cli.Context, index string) error {
 		return nil
 	}
 
-	name := pr.Poster.FullName
-	if len(name) == 0 {
-		name = pr.Poster.UserName
+	if ctx.Bool("merge") {
+		_, _, err := login.Client().MergePullRequest(owner, repo, idx, gitea.MergePullRequestOption{Style: gitea.MergeStyleRebase})
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		name := pr.Poster.FullName
+		if len(name) == 0 {
+			name = pr.Poster.UserName
+		}
+		fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, name, pr.Updated.Format("2006-01-02 15:04:05"), pr.Title, pr.Body)
 	}
-	fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, name, pr.Updated.Format("2006-01-02 15:04:05"), pr.Title, pr.Body)
+
 	return nil
 }
