@@ -60,7 +60,6 @@ func runPulls(ctx *cli.Context) error {
 		}
 
 		for _, pr := range prs {
-			name := pr.Poster.Email
 			if pr == nil || (matchName != "" && matchName != pr.Poster.Email) {
 				continue
 			}
@@ -74,7 +73,17 @@ func runPulls(ctx *cli.Context) error {
 					jiraTicket = partial[:toIdx]
 				}
 			}
-			fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, name, pr.Updated.Format("2006-01-02 15:04:05"), pr.Title, jiraTicket)
+
+			prTitle := pr.Title
+			if lenPrTitle := len(prTitle); lenPrTitle > 25 {
+				prTitle = prTitle[:24] + "..."
+			} else {
+				for ; lenPrTitle < 25; lenPrTitle++ {
+					prTitle += " "
+				}
+			}
+			prLink := fmt.Sprintf("https://gitea.brankas.dev/brankas/openbank-services/pulls/%d", pr.Index)
+			fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, pr.Updated.Format("2006-01-02 15:04:05"), prTitle, prLink, jiraTicket)
 		}
 	}
 
