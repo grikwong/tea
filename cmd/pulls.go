@@ -42,8 +42,19 @@ var CmdPulls = cli.Command{
 func runPulls(ctx *cli.Context) error {
 	login, owner, repo := initCommand(ctx)
 	matchName := ctx.String("match")
-	if ctx.Bool("matchLogin") {
-		matchName = login.Name
+	var matchNames []string
+	var mustMatchName bool
+	if matchName != "" {
+		mustMatchName = true
+		if strings.Contains(matchName, ",") {
+			matchNames = strings.Split(matchName, ",")
+		} else {
+			matchNames = []string{matchName}
+		}
+	}
+	if ctx.Bool("matchLogin") { // --ml matchLogin prevails.
+		mustMatchName = true
+		matchNames = []string{login.Name}
 	}
 
 	for i := 1; true; i++ {
@@ -60,8 +71,20 @@ func runPulls(ctx *cli.Context) error {
 		}
 
 		for _, pr := range prs {
-			if pr == nil || (matchName != "" && matchName != pr.Poster.Email) {
+			if pr == nil {
 				continue
+			}
+			if mustMatchName {
+				var found bool
+				for _, v := range matchNames {
+					if v == pr.Poster.Email {
+						found = true
+						break
+					}
+				}
+				if !found {
+					continue
+				}
 			}
 
 			var jiraTicket string
@@ -83,7 +106,7 @@ func runPulls(ctx *cli.Context) error {
 				}
 			}
 			prLink := fmt.Sprintf("https://gitea.brankas.dev/brankas/openbank-services/pulls/%d", pr.Index)
-			fmt.Printf("#%d\t%s\t%s\t%s\t%s\n", pr.Index, pr.Updated.Format("2006-01-02 15:04:05"), prTitle, prLink, jiraTicket)
+			fmt.Printf("#%d\t%s\t%s\t%s\t%s\t%s\n", pr.Index, pr.Poster.Email, pr.Updated.Format("2006-01-02 15:04:05"), prTitle, prLink, jiraTicket)
 		}
 	}
 
