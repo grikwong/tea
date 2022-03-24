@@ -105,8 +105,18 @@ func runPulls(ctx *cli.Context) error {
 					prTitle += " "
 				}
 			}
+
+			prEmail := pr.Poster.Email
+			if lenPrEmail := len(prEmail); lenPrEmail > 22 {
+				prEmail = prEmail[:19] + "..."
+			} else {
+				for ; lenPrEmail < 22; lenPrEmail++ {
+					prEmail += " "
+				}
+			}
+
 			prLink := fmt.Sprintf("https://gitea.brankas.dev/brankas/openbank-services/pulls/%d", pr.Index)
-			fmt.Printf("#%d\t%s\t%s\t%s\t%s\t%s\n", pr.Index, pr.Poster.Email, pr.Updated.Format("2006-01-02 15:04:05"), prTitle, prLink, jiraTicket)
+			fmt.Printf("#%d\t%s\t%s\t%s\t%s\t%s\n", pr.Index, prEmail, pr.Updated.Format("2006-01-02 15:04:05"), prTitle, prLink, jiraTicket)
 		}
 	}
 
